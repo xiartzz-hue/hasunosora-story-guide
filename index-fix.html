@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>蓮ノ空 活動記録便覧</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@600;700;900&display=swap" rel="stylesheet" />
+    <style>
+      button, [role="button"], select, summary, input:not([type="checkbox"], [type="radio"]) { min-height: 2rem; }
+      :root{
+        color-scheme: light dark;
+        --bg:#f6f3ec; --bg2:#efe9dd; --surface:#fffdf8; --surface2:#fbf7ee;
+        --ink:#2c2620; --ink2:#5c5347; --ink3:#8a7d6b;
+        --line:#ddd2bf; --line2:#cbbd9f;
+        --accent:#c2496b; /* JSでキャラ色に切替 */
+        --p102:#6d5ba8; --p103:#c2496b; --p104:#2f6f9f; --p105:#3f8f5f; --pkansho:#a8742c;
+        --period:var(--p103);
+        --shadow:0 1px 2px rgba(60,45,20,.06),0 8px 24px -12px rgba(60,45,20,.18);
+        --radius:14px;
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#16141a; --bg2:#1d1a23; --surface:#221f2a; --surface2:#282433;
+          --ink:#efe9df; --ink2:#c9bfa9; --ink3:#9a8d76;
+          --line:#3b3549; --line2:#4d4560;
+          --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -12px rgba(0,0,0,.6);
+        }
+      }
+      *{box-sizing:border-box}
+      html{scroll-behavior:smooth}
+      body{
+        margin:0; background:var(--bg); color:var(--ink);
+        font-family:"Noto Sans JP",system-ui,-apple-system,"Hiragino Kaku Gothic ProN",sans-serif;
+        font-size:15px; line-height:1.75; -webkit-font-smoothing:antialiased;
+      }
+      ::selection{background:var(--accent); color:#fff}
+      a{color:var(--accent)}
+      .wrap{max-width:1080px; margin:0 auto; padding:0 16px 64px}
+
+      /* ---------- ヘッダー ---------- */
+      header.hero{
+        background:
+          radial-gradient(120% 150% at 85% -30%, color-mix(in srgb, var(--accent) 26%, transparent), transparent 55%),
+          linear-gradient(160deg, var(--bg2), var(--bg));
+        border-bottom:3px double var(--line2);
+        transition:background .4s;
+      }
+      .hero-inner{max-width:1080px; margin:0 auto; padding:34px 16px 26px}
+      .hero .kicker{
+        display:inline-flex; align-items:center; gap:.5em;
+        font-size:.78rem; font-weight:700; letter-spacing:.14em; color:var(--ink2);
+      }
+      .hero .kicker::before{content:""; width:26px; height:2px; background:var(--accent); display:inline-block}
+      h1{
+        font-family:"Noto Serif JP",serif; font-weight:900;
+        font-size:clamp(1.9rem,5.4vw,3rem); line-height:1.25; margin:.35em 0 .3em; letter-spacing:.02em;
+      }
+      h1 .lotus{color:var(--accent)}
+      .hero p.lede{margin:0; max-width:46em; color:var(--ink2); font-size:.95rem}
+      .accent-note{margin-top:18px; font-size:.8rem; color:var(--ink3)}
+      .accent-note b{color:var(--accent)}
+
+      /* ---------- コントロール ---------- */
+      .controls{
+        position:static;
+        border-bottom:1px solid var(--line);
+        padding:10px 0 12px; margin-bottom:22px;
+      }
+      .controls .wrap{padding-bottom:0}
+      .tabs{display:flex; gap:6px; flex-wrap:wrap}
+      .tab{
+        appearance:none; border:1.5px solid var(--line2); background:var(--surface);
+        color:var(--ink2); font:inherit; font-weight:700; font-size:.9rem;
+        padding:6px 16px; border-radius:999px; cursor:pointer; min-height:2.4rem;
+        display:inline-flex; align-items:center; gap:.45em; transition:all .15s;
+      }
+      .tab .dot{width:9px; height:9px; border-radius:50%; background:var(--tc,#999); flex:none}
+      .tab:hover{border-color:var(--ink3)}
+      .tab[aria-pressed="true"]{background:var(--tc,var(--ink)); border-color:var(--tc,var(--ink)); color:#fff}
+      .tab[aria-pressed="true"] .dot{background:#fff}
+      .tab small{font-weight:500; opacity:.75; font-size:.75rem}
+
+      .filter-block{margin-top:12px}
+      .filter-label{font-size:.72rem; font-weight:700; letter-spacing:.12em; color:var(--ink3); margin:0 0 6px}
+      .chips{display:flex; flex-wrap:wrap; gap:6px}
+      .chip{
+        appearance:none; border:1px solid var(--line); background:var(--surface);
+        color:var(--ink2); font:inherit; font-size:.83rem; font-weight:500;
+        padding:4px 12px; border-radius:999px; cursor:pointer; min-height:2rem;
+        display:inline-flex; align-items:center; gap:.45em; transition:all .15s;
+      }
+      .chip:hover{border-color:var(--ink3)}
+      .chip[aria-pressed="true"]{background:var(--ink); border-color:var(--ink); color:var(--bg); font-weight:700}
+      .chip .cdot{width:11px; height:11px; border-radius:50%; background:var(--cc); border:1px solid rgba(0,0,0,.18); flex:none}
+      .chip[data-char][aria-pressed="true"]{background:var(--cc); border-color:var(--cc); color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.35)}
+      .chip[data-char][aria-pressed="true"] .cdot{background:#fff; border-color:transparent}
+
+      .search-row{display:flex; gap:8px; flex-wrap:wrap; align-items:stretch; margin-top:12px}
+      .search-box{flex:1 1 220px; display:flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:0 12px}
+      .search-box svg{flex:none; color:var(--ink3)}
+      .search-box input{border:0; background:transparent; font:inherit; color:var(--ink); width:100%; padding:8px 0; outline:none}
+      .search-box input::placeholder{color:var(--ink3)}
+      .digest-toggle{
+        appearance:none; display:inline-flex; align-items:center; gap:.55em;
+        border:1.5px solid var(--line2); background:var(--surface); color:var(--ink2);
+        font:inherit; font-weight:700; font-size:.88rem; border-radius:10px; padding:6px 14px; cursor:pointer;
+      }
+      .digest-toggle .sw{width:34px; height:19px; border-radius:999px; background:var(--line2); position:relative; flex:none; transition:background .15s}
+      .digest-toggle .sw::after{content:""; position:absolute; top:2.5px; left:3px; width:14px; height:14px; border-radius:50%; background:#fff; transition:left .15s; box-shadow:0 1px 3px rgba(0,0,0,.3)}
+      .digest-toggle[aria-pressed="true"]{background:#fdf3d7; border-color:#d9a92c; color:#7a5b00}
+      .digest-toggle[aria-pressed="true"] .sw{background:#d9a92c}
+      .digest-toggle[aria-pressed="true"] .sw::after{left:17px}
+      @media (prefers-color-scheme: dark){
+        .digest-toggle[aria-pressed="true"]{background:#3a3013; border-color:#d9a92c; color:#f3d67c}
+      }
+      .result-line{margin-top:10px; font-size:.83rem; color:var(--ink3); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap}
+      .result-line button{background:none; border:0; color:var(--accent); font:inherit; font-size:.83rem; font-weight:700; cursor:pointer; padding:0; min-height:0}
+
+      /* ---------- 期の見出し ---------- */
+      .period-head{margin:30px 0 14px; display:flex; align-items:baseline; gap:14px; flex-wrap:wrap}
+      .period-head h2{
+        font-family:"Noto Serif JP",serif; font-weight:900; font-size:1.55rem; margin:0;
+        display:flex; align-items:center; gap:.5em;
+      }
+      .period-head h2::before{content:""; width:12px; height:12px; border-radius:3px; background:var(--pc); flex:none; transform:rotate(45deg)}
+      .period-head p{margin:0; color:var(--ink2); font-size:.88rem; flex:1 1 320px}
+
+      /* ---------- カード ---------- */
+      .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+      @media (max-width:840px){ .grid{grid-template-columns:1fr} }
+      .card{
+        background:var(--surface); border:1px solid var(--line); border-top:4px solid var(--pc,var(--period));
+        border-radius:var(--radius); box-shadow:var(--shadow);
+        padding:16px 18px 14px; display:flex; flex-direction:column; gap:8px;
+      }
+      .card-top{display:flex; gap:14px; align-items:flex-start}
+      .card-main{flex:1; min-width:0}
+      .tags{display:flex; flex-wrap:wrap; gap:5px; align-items:center}
+      .tag-sq{
+        font-size:.7rem; font-weight:700; letter-spacing:.04em; padding:2px 8px; border-radius:5px;
+        background:var(--pc,var(--period)); color:#fff; line-height:1.5;
+      }
+      .tag-sq.sub{background:transparent; color:var(--ink2); border:1px solid var(--line2)}
+      .tag-sq.digest{background:#d9a92c; color:#4a3800}
+      .ep-date{margin-left:auto; font-size:.78rem; color:var(--ink3); white-space:nowrap; font-variant-numeric:tabular-nums}
+      .card h3{font-family:"Noto Serif JP",serif; font-weight:700; font-size:1.13rem; line-height:1.45; margin:2px 0 0}
+      .card h3 .epno{color:var(--pc,var(--period)); font-size:.85em; margin-right:.4em; white-space:nowrap}
+      .syn{margin:0; font-size:.9rem; color:var(--ink); line-height:1.8}
+      .syn .approx{color:var(--ink3); font-size:.8rem}
+      .thumb{flex:none; width:168px; max-width:42%}
+      .thumb a{display:block; border-radius:9px; overflow:hidden; position:relative; line-height:0; border:1px solid var(--line)}
+      .thumb img{width:100%; aspect-ratio:16/9; object-fit:cover; display:block; background:var(--bg2)}
+      .thumb .play{
+        position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+        background:linear-gradient(to top, rgba(0,0,0,.45), transparent 55%);
+      }
+      .thumb .play span{
+        width:34px; height:34px; border-radius:50%; background:rgba(200,30,50,.92); color:#fff;
+        display:flex; align-items:center; justify-content:center; font-size:.8rem; padding-left:2px;
+      }
+      .thumb figcaption{font-size:.68rem; color:var(--ink3); text-align:center; margin-top:4px; line-height:1.4}
+      @media (max-width:520px){ .thumb{width:132px} }
+      .meta{border-top:1px dashed var(--line); padding-top:8px; display:grid; gap:6px}
+      .meta-row{display:flex; gap:10px; font-size:.83rem; align-items:flex-start}
+      .meta-row .k{flex:none; width:4.6em; font-size:.72rem; font-weight:700; letter-spacing:.08em; color:var(--ink3); padding-top:.3em}
+      .meta-row .v{flex:1; color:var(--ink2)}
+      .meta-row .v.quote{color:var(--ink); font-family:"Noto Serif JP",serif; font-weight:600}
+      .meta-row .v.quote .who{font-family:"Noto Sans JP",sans-serif; font-size:.78rem; color:var(--ink3); font-weight:500; margin-right:.4em}
+      .chars{display:flex; flex-wrap:wrap; gap:5px}
+      .char-tag{
+        display:inline-flex; align-items:center; gap:.4em; font-size:.78rem; font-weight:500;
+        border:1px solid var(--line); border-radius:999px; padding:1px 10px 1px 6px; background:var(--surface2); color:var(--ink);
+      }
+      .char-tag i{width:10px; height:10px; border-radius:50%; background:var(--cc); border:1px solid rgba(0,0,0,.15); flex:none}
+      .char-tag.main{border-color:var(--cc); font-weight:700; box-shadow:inset 0 0 0 1px var(--cc)}
+      .card-links{display:flex; flex-wrap:wrap; gap:8px; margin-top:2px}
+      .btn-link{
+        display:inline-flex; align-items:center; gap:.45em; text-decoration:none;
+        font-size:.82rem; font-weight:700; border-radius:8px; padding:6px 12px; min-height:2rem;
+        background:#c81e32; color:#fff;
+      }
+      .btn-link.sub{background:transparent; color:var(--ink2); border:1px solid var(--line2)}
+      .btn-link:hover{filter:brightness(1.08)}
+
+      /* 書籍カード */
+      .book-card{grid-column:1/-1}
+      .book-cols{display:grid; grid-template-columns:1fr 1fr; gap:6px 26px; margin-top:4px}
+      @media (max-width:640px){ .book-cols{grid-template-columns:1fr} }
+      .book-cols ol{margin:0; padding-left:1.4em; font-size:.88rem; color:var(--ink2)}
+      .book-cols ol li{margin:.15em 0}
+      .book-cols h4{font-size:.8rem; letter-spacing:.08em; color:var(--ink3); margin:8px 0 2px}
+
+      /* ダイジェストバナー */
+      .digest-panel{
+        border:1.5px solid #d9a92c; background:linear-gradient(150deg,#fdf6da, var(--surface));
+        border-radius:var(--radius); padding:18px; margin-bottom:20px;
+      }
+      @media (prefers-color-scheme: dark){ .digest-panel{background:linear-gradient(150deg,#38300f, var(--surface))} }
+      .digest-panel h2{font-family:"Noto Serif JP",serif; font-size:1.2rem; margin:0 0 4px}
+      .digest-panel p{margin:0 0 14px; font-size:.88rem; color:var(--ink2)}
+      .digest-videos{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:12px}
+      .dv a{display:block; text-decoration:none; color:var(--ink)}
+      .dv img{width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:9px; border:1px solid var(--line); display:block}
+      .dv .t{font-weight:700; font-size:.87rem; margin-top:6px; line-height:1.5}
+      .dv .d{font-size:.76rem; color:var(--ink3)}
+
+      .empty{
+        border:1.5px dashed var(--line2); border-radius:var(--radius); padding:36px 20px; text-align:center; color:var(--ink2);
+        background:var(--surface2);
+      }
+      .empty b{font-family:"Noto Serif JP",serif; font-size:1.05rem; color:var(--ink); display:block; margin-bottom:4px}
+
+      /* ---------- フッター ---------- */
+      footer{margin-top:52px; border-top:3px double var(--line2); padding-top:20px; font-size:.83rem; color:var(--ink2)}
+      footer h2{font-family:"Noto Serif JP",serif; font-size:1rem; margin:0 0 8px; color:var(--ink)}
+      footer ul{margin:0 0 14px; padding-left:1.3em}
+      footer li{margin:.25em 0}
+      .fineprint{color:var(--ink3); font-size:.76rem}
+      .hidden{display:none !important}
+      @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{transition:none !important} }
+    </style>
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero-inner">
+        <span class="kicker">ラブライブ！蓮ノ空女学院スクールアイドルクラブ</span>
+        <h1>蓮ノ空 <span class="lotus">活動記録</span>便覧</h1>
+        <p class="lede">アプリ「Link！Like！ラブライブ！」で紡がれた、蓮ノ空女学院スクールアイドルクラブの長編ストーリー「活動記録」の便覧です。期ごとに各話をカードで整理し、確認できた回にはあらすじ・登場人物・名言メモ・関連曲と、公式YouTubeのまとめ動画へのリンクをまとめました。詳細を確認できなかった回は、タイトルと期の概要のみを掲載しています。気になる回を、ユニットやキャラ、キーワードから探せます。</p>
+        <p class="accent-note">キャラを選ぶと、その子の<b>メンバーカラー</b>がこのページのアクセントになります。</p>
+      </div>
+    </header>
+
+    <div class="controls" role="region" aria-label="絞り込み">
+      <div class="wrap">
+        <div class="tabs" id="period-tabs" role="group" aria-label="期・章（カテゴリ）"></div>
+
+        <div class="filter-block">
+          <p class="filter-label">ユニットで絞り込む</p>
+          <div class="chips" id="unit-chips"></div>
+        </div>
+
+        <div class="filter-block">
+          <p class="filter-label">登場人物で絞り込む（第2段階：キャラ選択）</p>
+          <div class="chips" id="char-chips"></div>
+        </div>
+
+        <div class="search-row">
+          <label class="search-box">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.8-3.8"/></svg>
+            <input type="search" id="q" placeholder="キーワード検索（例：卒業、フィギュア、Bloom、沙知）" aria-label="キーワード検索" />
+          </label>
+          <button type="button" class="digest-toggle" id="digest-toggle" aria-pressed="false">
+            <span class="sw" aria-hidden="true"></span>ざっくり追いつくモード
+          </button>
+        </div>
+        <div class="result-line">
+          <span id="result-count" aria-live="polite"></span>
+          <button type="button" id="reset-btn">絞り込みをリセット</button>
+        </div>
+      </div>
+    </div>
+
+    <main class="wrap">
+      <section id="digest-panel" class="digest-panel hidden" aria-label="公式ダイジェスト動画">
+        <h2>⏱ ほぼ10分でわかる蓮ノ空（公式ダイジェスト）</h2>
+        <p>時間がない人はまずこちら。公式が活動記録を約10分にまとめたダイジェスト動画です。下の一覧も、ダイジェストで扱われている回だけに絞り込んでいます。</p>
+        <div class="digest-videos" id="digest-videos"></div>
+      </section>
+
+      <div id="list"></div>
+      <div id="empty" class="empty hidden">
+        <b>条件に合う回が見つかりませんでした</b>
+        キーワードやフィルターをゆるめて、もう一度探してみてください。
+      </div>
+
+      <footer>
+        <h2>出典・参考</h2>
+        <ul>
+          <li>公式YouTubeチャンネル「ラブライブ！蓮ノ空女学院スクールアイドルクラブ」の活動記録まとめ動画・「ほぼ10分でわかる」シリーズ（各カードのリンク先）</li>
+          <li><a href="https://dic.pixiv.net/a/%E6%B4%BB%E5%8B%95%E8%A8%98%E9%8C%B2" target="_blank" rel="noopener">ピクシブ百科事典「活動記録」</a>（話数・タイトル・実装日の確認）</li>
+          <li><a href="https://note.com/lovelive_hasu/n/n04b821e02bbf" target="_blank" rel="noopener">公式note「ほぼ10分でわかる Link！Like！ラブライブ！の活動記録/ストーリー」</a>（ダイジェストの対象範囲）</li>
+        </ul>
+        <p class="fineprint">本ページはファンメイドの非公式便覧です。あらすじは各話の内容を短く書き直したもので、公式の文章ではありません。一部の回は詳細を確認できなかったため、タイトルと期の概要のみを掲載しています。「ラブライブ！」「蓮ノ空女学院スクールアイドルクラブ」はプロジェクトラブライブ！蓮ノ空女学院スクールアイドルクラブの作品です。サムネイル画像はYouTube公式動画のものです。</p>
+      </footer>
+    </main>
+
+    <script>
+    "use strict";
+    /* ============ マスタデータ ============ */
+    var CHARS = {
+      "花帆":  {full:"日野下花帆", color:"#f8b500", unit:"スリーズブーケ"},
+      "さやか":{full:"村野さやか", color:"#5383c3", unit:"DOLLCHESTRA"},
+      "梢":    {full:"乙宗梢",     color:"#68be8d", unit:"スリーズブーケ"},
+      "綴理":  {full:"夕霧綴理",   color:"#ba2736", unit:"DOLLCHESTRA"},
+      "瑠璃乃":{full:"大沢瑠璃乃", color:"#e75f9e", unit:"みらくらぱーく！"},
+      "慈":    {full:"藤島慈",     color:"#a89fa5", unit:"みらくらぱーく！"},
+      "吟子":  {full:"百生吟子",   color:"#7fc4cc", unit:"スリーズブーケ"},
+      "小鈴":  {full:"徒町小鈴",   color:"#e8c33a", unit:"DOLLCHESTRA"},
+      "姫芽":  {full:"安養寺姫芽", color:"#9d8de2", unit:"みらくらぱーく！"},
+      "セラス":{full:"セラス・柳田・リリエンフェルト", color:"#f56455", unit:"Edel Note"},
+      "泉":    {full:"桂城泉",     color:"#1ebecd", unit:"Edel Note"},
+      "沙知":  {full:"大賀美沙知", color:"#a7d213", unit:""}
+    };
+    var UNITS = ["スリーズブーケ","DOLLCHESTRA","みらくらぱーく！","Edel Note"];
+    var PERIODS = [
+      {id:"102", name:"102期", sub:"前日譚（書籍）", color:"var(--p102)", hex:"#6d5ba8",
+       desc:"花帆が入学する前年の物語。梢・綴理・慈の3人と、生徒会長・大賀美沙知を描く前日譚で、小説『102期活動記録』2巻で展開した。"},
+      {id:"103", name:"103期", sub:"2023年度", color:"var(--p103)", hex:"#c2496b",
+       desc:"花帆・さやか・瑠璃乃が入学した年。6人でラブライブ！に挑み、決勝で敗れるまでと、その先の卒業までを描く第1章の始まり。全18話。"},
+      {id:"104", name:"104期", sub:"2024年度", color:"var(--p104)", hex:"#2f6f9f",
+       desc:"吟子・小鈴・姫芽が加入し9人体制に。瑞河女子のセラスと泉との出会い、そしてラブライブ！優勝へ。全13話。"},
+      {id:"105", name:"105期", sub:"2025年度", color:"var(--p105)", hex:"#3f8f5f",
+       desc:"花帆が部長となり「みんなが花咲ける場所＝Bloom Garden Party」を目指す年。セラスと泉がEdel Noteとして加入し8人体制に。第1章完結までの全12話。"},
+      {id:"kansho", name:"間章", sub:"Dream Interlude", color:"var(--pkansho)", hex:"#a8742c",
+       desc:"第1章完結後、2026年4月から始まった間章。花帆の在学中に起きた、語られなかったエピソードを描く。公式YouTubeと公式note「蓮ノート」で展開中。"}
+    ];
+    var DIGESTS = [
+      {title:"ほぼ10分でわかる 〜スリーズブーケ〜", covers:"103期 第1〜3話が中心", vid:"L3Xy14-Djnw"},
+      {title:"ほぼ10分でわかる 〜DOLLCHESTRA〜", covers:"103期 第4〜6話が中心", vid:"VgvfM60lvUY"},
+      {title:"ほぼ10分でわかる 〜みらくらぱーく！〜", covers:"103期 第9〜10話が中心", vid:"SFZ_Wk_VVbI"},
+      {title:"ほぼ10分でわかる 〜103期LoveLive! 編〜", covers:"103期 第14〜15話が中心", vid:"JxkegVbRVd4"},
+      {title:"ほぼ10分でわかる 〜沙知先輩卒業 編〜", covers:"103期 第18話が中心", vid:"iRiy4K8sW5E"},
+      {title:"ほぼ10分でわかる 〜104期新入生 編〜", covers:"104期 第1〜6話のダイジェスト", vid:"i7aQYpIaFIg"}
+    ];
+    var DIGEST_VID = {
+      "スリーズブーケ編":"L3Xy14-Djnw", "DOLLCHESTRA編":"VgvfM60lvUY", "みらくらぱーく！編":"SFZ_Wk_VVbI",
+      "103期LoveLive! 編":"JxkegVbRVd4", "沙知先輩卒業 編":"iRiy4K8sW5E", "104期新入生 編":"i7aQYpIaFIg"
+    };
+    function yt(id){ return "https://www.youtube.com/watch?v=" + id; }
+    function thumb(id){ return "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg"; }
+
+    /* ============ 活動記録データ ============
+       syn: あらすじ（書き直し） / quote: [発言者, 名言] / memo: 名場面メモ
+       song: 関連曲・Fes×LIVE / digest: 対応ダイジェスト名 / approx: 概要のみの注記 */
+    var EPISODES = [
+    /* ---------- 102期（書籍） ---------- */
+    {period:"102", type:"book", no:"書籍", title:"102期活動記録 ～Shades of Stars～", date:"小説（書籍）",
+     arc:"書籍", chars:["梢","綴理","慈","沙知"], main:["梢","綴理","慈"],
+     syn:"花帆が入学する前年、102期の物語。スクールアイドルクラブの梢・綴理・慈と、生徒会長の大賀美沙知の出会いと日々を描く前日譚。103期の物語の「なぜ」の多くは、ここに根がある。",
+     chapters:{h:"収録エピソード", items:["第1話 a falling star","第2話 Sparkly Spot","第3話 Reflection in the mirror 前編","第4話 Reflection in the mirror 後編","第5話 Love with the world","第5.5話 初めてのハッピーバースデー（付属CDボイスドラマ）","第6話 On your mark 前編","第7話 On your mark 後編＆エピローグ"]},
+     memo:"第5.5話を除くエピソードは、後にアプリ「リンクラ」内でも動画化された（2025年実装）。"},
+    {period:"102", type:"book", no:"書籍", title:"102期活動記録 ～Ties of Triangle～", date:"小説（書籍）",
+     arc:"書籍", chars:["梢","綴理","慈","沙知"], main:["梢","綴理","慈"],
+     syn:"『Shades of Stars』に続く102期の小説第2巻。「蓮ノ大三角」と呼ばれた3人の絆と、沙知の視点から見たクラブの日々を描く。こちらは小説のみの展開。",
+     chapters:{h:"収録エピソード", items:["第1話 Next Step!","閑話 大賀美沙知のお話 その1","第2話 Identity crisis!","閑話 大賀美沙知のお話 その2","第3話 unworkable","閑話 大賀美沙知のお話 その3","第4話 繋いだ今日の僕たちより 前編","第5話 繋いだ今日の僕たちより 後編"]},
+     memo:"103期第18話で大三角が沙知へ贈った曲「抱きしめる花びら」の文脈は、この2巻に深く関わる。"},
+
+    /* ---------- 103期 ---------- */
+    {period:"103", no:"第1話", title:"花咲きたい！", date:"2023-04-15", arc:"スリーズブーケ編",
+     chars:["花帆","さやか","梢","綴理"], main:["花帆","梢"], units:["スリーズブーケ"],
+     syn:"花に囲まれて育った日野下花帆が、蓮ノ空女学院へ入学。思い描いた環境とはほど遠い学校生活に戸惑う中、スクールアイドルの乙宗梢と出会い、心を奪われる。入学のバスで隣になった村野さやかも巻き込み、花帆はスクールアイドルクラブへの入部を決意する。",
+     quote:["花帆","光を、雨を、風を、待っているだけじゃない！あたしはあたしの力で花咲いてみせる！"],
+     song:"Dream Believers（初ライブで披露）", vid:"SCPSPtDQiso", digest:"スリーズブーケ編"},
+    {period:"103", no:"第2話", title:"ダメダメ⇨世界一！？", date:"2023-04-15", arc:"スリーズブーケ編",
+     chars:["花帆","梢"], main:["花帆","梢"], units:["スリーズブーケ"],
+     syn:"入部した花帆は、1週間毎日ライブをする怒涛の日々へ。アプリ「スクコネ」での配信にも挑戦するが、自分の配信を見返して一度挫折しかける。梢の献身的な「先輩活動」に触れた花帆は、「世界で一番のスクールアイドル」という新しい目標を見つける。",
+     quote:["梢","私に苦手なことなんてないわ。これは得意になる途中なの！"],
+     vid:"431pdEAq4Oc", digest:"スリーズブーケ編"},
+    {period:"103", no:"第3話", title:"雨と、風と、太陽と", date:"2023-04-15", arc:"スリーズブーケ編",
+     chars:["花帆","梢","さやか"], main:["花帆","梢"], units:["スリーズブーケ"],
+     syn:"梢が憧れたのは、廃校の危機を救ったという伝説のスクールアイドルだった。金沢市内のイベントに参加するも、花帆のオーバーワークが原因でリハーサル中に梢がケガをし、出演を辞退することに。大倉庫での再会を経て、2人は改めてユニットを組み直し、伝統の衣装でステージに立つ。",
+     quote:["梢","お願い、花帆さん！私ともう一度、ユニットを組んで。頑張るあなたの、その隣に立っていたいの。"],
+     vid:"prQXSRkg5N0", digest:"スリーズブーケ編"},
+    {period:"103", no:"第4話", title:"わたしのスクールアイドル", date:"2023-04-15", arc:"DOLLCHESTRA編",
+     chars:["さやか","綴理"], main:["さやか","綴理"], units:["DOLLCHESTRA"],
+     syn:"学校見学のステージ出演を打診された綴理は、過去に言われた「あなたはスクールアイドルではない」という言葉が原因で、一度は辞退しかける。さやかの真っ直ぐな言葉に背中を押されてステージに立ち、ライブは大成功。花帆と梢とは別の、もうひとつの運命の出会いが描かれる。",
+     quote:["さやか","誰が、あなた自身が、なんと言おうと！わたしにとっては、あなたがスクールアイドルです"],
+     vid:"tq7Ka5W40rU", digest:"DOLLCHESTRA編"},
+    {period:"103", no:"第5話", title:"顔を上げて", date:"2023-04-15", arc:"DOLLCHESTRA編",
+     chars:["さやか","綴理"], main:["さやか","綴理"], units:["DOLLCHESTRA"],
+     syn:"フィギュアスケートで上手くいかないさやかは、綴理に連れられて近江町市場の海鮮丼屋などでお手伝いをする日々へ。3日間の接客を通して「自分を見てくれる人のために頑張る」ことを学び、さやかは自分が自分でいることを許せるようになっていく。",
+     quote:["綴理","さやがさやで居ることを許してあげたら良いと思うんだ"],
+     vid:"dptH4M9IwcQ", digest:"DOLLCHESTRA編"},
+    {period:"103", no:"第6話", title:"わがまま on the ICE!!", date:"2023-04-15", arc:"DOLLCHESTRA編",
+     chars:["さやか","花帆","綴理"], main:["さやか"], units:["DOLLCHESTRA"],
+     syn:"週末のフィギュアの大会が迫るさやか。優勝を果たす一方で、先輩・つかさの引退アイスショーへの出演依頼が、クラブのライブと重なってしまう。雨の中のベンチで花帆から助言をもらったさやかは「どちらも諦めない」と宣言し、アイスショーとDOLLCHESTRAのライブを両立させる。",
+     quote:["さやか","フィギュアもスクールアイドルもやめません。あなたとここで、アイスショーです"],
+     vid:"UIVb-sL9YJ4", digest:"DOLLCHESTRA編"},
+    {period:"103", no:"第7話", title:"センパイとコウハイ", date:"2023-05-21", arc:"全体",
+     chars:["花帆","さやか","梢","綴理"], main:["花帆","さやか"], units:["スリーズブーケ","DOLLCHESTRA"],
+     syn:"撫子祭の部活紹介の新聞記事を作るため、103期生が102期生の先輩たちについて調べ始める。大倉庫で見つけた写真をきっかけに、梢と綴理のあいだにある過去のわだかまりが少しずつ見えてくる。後輩たちは「撫子祭のライブは4人で」と言い切る。",
+     quote:["花帆","撫子祭のライブは4人で！！4人でやりましょう！！"],
+     vid:"QGfxWP6siJA"},
+    {period:"103", no:"第8話", title:"あの日のこころ、明日のこころ", date:"2023-06-12", arc:"全体",
+     chars:["梢","綴理","花帆","さやか"], main:["梢","綴理"], units:["スリーズブーケ","DOLLCHESTRA"],
+     syn:"4人でのライブを決心した梢と綴理だが、足並みが揃わない。花帆の発案で「揃うまでくっついている」ことになった2人は、お祭りのお手伝いと綴理の実家へのお泊まりを経て少しずつ打ち解ける。他校からのスカウトを巡るすれ違いを越え、梢は自分の夢を言葉にする。",
+     quote:["梢","私の夢はもう、私だけの夢じゃない。あなたたちと一緒に叶えたい夢。"],
+     song:"水彩世界（昨年の予選で梢と綴理が歌った曲）", vid:"Tb8g5GSraqc"},
+    {period:"103", no:"第9話", title:"ルリ・エスケープ", date:"2023-07-18", arc:"みらくらぱーく！編",
+     chars:["瑠璃乃","花帆","さやか"], main:["瑠璃乃"], units:["みらくらぱーく！"],
+     syn:"転入生の大沢瑠璃乃が、スクールアイドルクラブに体験入部してくる。明るく全力で突っ走る一方、すぐに「充電切れ」してしまう瑠璃乃。バスで逃走する騒動の末、自分の弱さを告白した瑠璃乃は入部の意思を固めるが、ユニットを組む相手の藤島慈はまだクラブにいなかった。",
+     quote:["花帆","やりたい気持ちがあれば、どんな個性だって受け入れられるのが、スクールアイドルなの！"],
+     vid:"m8_VsC4EP9A", digest:"みらくらぱーく！編"},
+    {period:"103", no:"第10話", title:"ルリめぐ・ファンファーレ", date:"2023-08-09", arc:"みらくらぱーく！編",
+     chars:["瑠璃乃","慈","花帆","梢"], main:["瑠璃乃","慈"], units:["みらくらぱーく！"],
+     syn:"瑠璃乃は、竜胆祭でステージから落ちてケガをし、ステージに上がれなくなって休部している慈のことを知る。慈の心に火をつけるため、梢の別荘での夏合宿を計画。「昔は昔！」と引っ張る瑠璃乃に慈も心を動かされ、みらくらぱーく！が結成される。",
+     quote:["瑠璃乃","昔は昔！過去は過去！これからは、ルリがめぐちゃんを引っ張ってって、めぐちゃんもルリを引っ張っていく、そんな新しいめぐルリ！"],
+     vid:"dL3VNPMYzzQ", digest:"みらくらぱーく！編"},
+    {period:"103", no:"第11話", title:"スクールアイドルクラブのために！（？）", date:"2023-09-16", arc:"全体",
+     chars:["花帆","さやか","瑠璃乃","梢","綴理","慈"], main:["慈"], units:["スリーズブーケ","DOLLCHESTRA","みらくらぱーく！"],
+     syn:"3ユニットが揃い、市内でのライブと温泉旅館「ゆのくに天祥」でのお手伝い＋ミニライブを計画。ところが旅館にトラブルが発生し、メンバーはライブに間に合わなくなる。慈が1人で会場の場をつなぐことでライブは成功し、6人の絆が深まる回。",
+     quote:["慈","みんなのこと、もーっと夢中にさせちゃうからね☆"],
+     vid:"KL5sO3N8H-4"},
+    {period:"103", no:"第12話", title:"期待はおもい！", date:"2023-10-26", arc:"ラブライブ！編",
+     chars:["さやか","沙知","梢","花帆","瑠璃乃"], main:["さやか"], units:["スリーズブーケ","DOLLCHESTRA","みらくらぱーく！"],
+     syn:"ラブライブ！の予選が始まる中、竜胆祭を前に梢が熱を出して倒れてしまう。臨時リーダーを任されたさやかは、生徒会長の沙知から3つの試練を出され、最後の「なんのためにスクールアイドルをやるのか」という問いに、ソロステージで答えを示す。",
+     quote:["さやか","わたしは誰かが期待してくれるから、スクールアイドルをやりたいと思えるし、やりたいと思うんです"],
+     song:"Runway（さやかソロ）／竜胆祭・103期10月度Fes×LIVEと連動", vid:"11Of9XcxMO4"},
+    {period:"103", no:"第13話", title:"追いついたよ", date:"2023-11-20", arc:"DOLLCHESTRA編",
+     chars:["綴理","さやか","沙知"], main:["綴理"], units:["DOLLCHESTRA"],
+     syn:"ラブライブ！地区予選を全ユニットが突破。頼りになる存在になったさやかに「置いていかれる」と感じた綴理は、オープンキャンパスの実行委員に挑戦する。雨でピンチになった当日のライブをアンブレラスカイで乗り切り、綴理と沙知の過去のすれ違いも解けていく。",
+     quote:["綴理","今もまた、さやには助けられてばっかりだけど...待ってて。頑張って、追いつくから"],
+     song:"ツバサ・ラ・リベルテ（沙知が作った曲）", vid:"vIwAVic2bb4"},
+    {period:"103", no:"第14話", title:"Link！Like！", date:"2023-12-17", arc:"ラブライブ！編",
+     chars:["花帆","さやか","瑠璃乃","梢","綴理","慈"], main:["花帆"], units:["スリーズブーケ","DOLLCHESTRA","みらくらぱーく！"],
+     syn:"ラブライブ！北陸大会を直前に控えた6人に、来年度から学内や寮でネットの使用が禁止されるという話が飛び込んでくる。さらに予告なく通信制限と外出禁止令が発令。花帆たちは、全校生徒のテザリングを集めて配信で大会に挑む「テザLink！ライブ」を計画する。タイトル回収回。",
+     quote:["梢","ラブライブ！北陸大会を優勝して学校の『ネット禁止令』を撤廃する。ずいぶんシンプルな話になったわね"],
+     vid:"PBuFbZ4QviQ", digest:"103期LoveLive! 編"},
+    {period:"103", no:"第15話", title:"夢を信じる物語", date:"2024-01-08", arc:"ラブライブ！編",
+     chars:["花帆","さやか","瑠璃乃","梢","綴理","慈"], main:["花帆","梢"], units:["スリーズブーケ","DOLLCHESTRA","みらくらぱーく！"],
+     syn:"ラブライブ！決勝大会で、蓮ノ空は敗退してしまう。金沢に帰った翌日、散り散りになったメンバーを花帆と梢が1人ずつ訪ね、それぞれの答えを聞いていく。最後に残った梢の涙と本音に、花帆は「今度こそ、あたしたちでセンパイの夢を叶えましょう」と誓う。",
+     quote:["梢","一緒に、夢を信じてくれる・・・？"],
+     memo:"単独のまとめ動画はなく、第14話・12月度Fes×LIVE等と合わせた動画で公開。", vid:"BJvIYw9hdxI", digest:"103期LoveLive! 編"},
+    {period:"103", no:"第16話", title:"Special Thanks", date:"2024-01-22", arc:"全体",
+     chars:["花帆","梢","沙知"], main:["花帆"], units:["スリーズブーケ"],
+     syn:"大会やテザLink！ライブで応援してくれた人たちへ、感謝を伝えるライブを開くことになったクラブ。梢を「花咲かせる」ため作詞を引き受けた花帆は苦戦するが、沙知の提案で招待状を手渡しで届ける旅に出る。行く先々で感謝を伝え返され、花帆は「夢見る気持ちは繋がった人にも響いていた」ことに気づく。",
+     quote:["梢","素敵な歌詞だわ。あなたらしくて、まっすぐな気持ちが伝わってくる。これでいきましょう"],
+     vid:"ms2lYnH0YTY"},
+    {period:"103", no:"第17話", title:"ルリ思う。", date:"2024-02-07", arc:"みらくらぱーく！編",
+     chars:["瑠璃乃","慈","花帆","梢","さやか","綴理"], main:["瑠璃乃","慈"], units:["みらくらぱーく！"],
+     syn:"「ついてこれない子のことも考えたい」瑠璃乃と、「先に盛り上がる場所を作るべき」な慈が対立する。くじ引きで決めたごちゃまぜシャッフルユニットのライブを経て瑠璃乃の気持ちが伝わり、2人は改めてみらくらぱーく！として歩むことを誓い合う。",
+     quote:["瑠璃乃・慈","ふたりで、世界中を夢中にしよう"],
+     vid:"2R91tf1Ak0c"},
+    {period:"103", no:"第18話", title:"いずれ会う四度目の桜", date:"2024-03-04", arc:"卒業",
+     chars:["梢","綴理","慈","沙知","花帆","さやか","瑠璃乃"], main:["梢","綴理","慈"], units:["スリーズブーケ","DOLLCHESTRA","みらくらぱーく！"],
+     syn:"卒業する沙知へ、蓮ノ大三角が贈る曲を作る日々。歌は梢、ダンスは綴理、言葉は慈が担当し、「沙知にしか届かない150点」の曲が完成する。沙知からは第二音楽堂がプレゼントされ、桜並木の前で別れを告げる、103期の締めくくり。",
+     quote:["沙知","別れがあって、出会いがある。別れにはつらい気持ちになることもあるけど...未来は意外と明るいんだってことを、憶えておいてほしいな"],
+     song:"抱きしめる花びら（蓮ノ大三角）", vid:"c06Zlv5JIfM", digest:"沙知先輩卒業 編"},
+
+    /* ---------- 104期 ---------- */
+    {period:"104", no:"第1話", title:"未来への歌", date:"2024-04-13", arc:"新入生",
+     chars:["吟子","小鈴","姫芽","花帆","さやか","瑠璃乃","梢"], main:["吟子","小鈴","姫芽"], units:["スリーズブーケ","DOLLCHESTRA","みらくらぱーく！"],
+     syn:"2年目が始まり、新入生3人が各ユニットに迎えられる。伝統に憧れる百生吟子、蓮ノ湖をいかだで渡ろうとする徒町小鈴、ゲーム実況者の安養寺姫芽。吟子の大好きだった「逆さまの歌」が、今はReflection in the mirrorとして伝わっていることが分かり、吟子はその曲をFes×LIVEで披露することを決意する。サブタイトルはパートごとに「ちぇすとー!」「めぐちゃんせんぱい、るりちゃんせんぱい」も。",
+     quote:["花帆","大好きなものを、大好きだから後輩に伝え続けたいって思うのが、伝統なんだから！"],
+     song:"Reflection in the mirror", vid:"f_CBxhnb6pE", digest:"104期新入生 編"},
+    {period:"104", no:"第2話", title:"踊り続けよう、きみが見てる", date:"2024-05-14", arc:"DOLLCHESTRA編",
+     chars:["小鈴","さやか","綴理"], main:["小鈴","さやか"], units:["DOLLCHESTRA"],
+     syn:"3年生が修学旅行で不在のあいだ、「敦賀スクールアイドルライブフェスタ」のトリはさやかが任される。地元の家族に頑張る姿を見せたい小鈴は特訓を志願。憧れを追いかけることで頭がいっぱいだった小鈴は、ソロステージで自分だけの魅力に気づき、さやかは小鈴の色を入れた新曲の作詞を始める。",
+     quote:["小鈴","間違いなんかじゃないっ...決めるのはっっ！！自分だ！！！！"],
+     song:"Sparkly Spot（小鈴ソロ）／レディバグ（DOLLCHESTRA）", vid:"LidUr3VdgfU", digest:"104期新入生 編"},
+    {period:"104", no:"第3話", title:"ゆえに、みらくらぱーく！あり", date:"2024-06-16", arc:"みらくらぱーく！編",
+     chars:["瑠璃乃","姫芽","慈"], main:["瑠璃乃","姫芽"], units:["みらくらぱーく！"],
+     syn:"撫子祭に向けて、みらくらぱーく！の出し物は瑠璃乃と姫芽が担当することに。ラジオをやりたかった瑠璃乃と、「自分のせいで我慢させてしまった」と思い込む姫芽は、ゲームでの勝負を通して正面からぶつかり合う。仲間になった証として、瑠璃乃は姫芽を「ひめっち」と呼ぶようになる。幕間「Bloom the stars」も収録。",
+     quote:["姫芽","げ、現代に生誕せし博愛の聖女～...！"],
+     vid:"Aka1kVir72g", digest:"104期新入生 編"},
+    {period:"104", no:"第4話", title:"いまも昔も、同じ空の下", date:"2024-07-21", arc:"スリーズブーケ編",
+     chars:["吟子","梢","花帆","小鈴","姫芽"], main:["吟子"], units:["スリーズブーケ"],
+     syn:"大倉庫の棚卸しで見つけた、初代3ユニットの伝統衣装はボロボロだった。吟子は祖母の提案で、自分の手で衣装を仕立て直すことを決意する。伝統工芸体験ツアーを経て、吟子は「芸学部じゃなく、今を生きるスクールアイドルの百生吟子」として一歩を踏み出す。Fes×LIVEでは初代衣装のリメイク「華・麗・雅」が披露された。",
+     quote:["吟子","私は、スクールアイドル。芸学部じゃなくて...今を生きる、スクールアイドルの百生吟子"],
+     vid:"TrquTJ8mHhY", digest:"104期新入生 編"},
+    {period:"104", no:"第5話", title:"不完全で、未完成", date:"2024-08-14", arc:"全体",
+     chars:["小鈴","花帆","さやか","瑠璃乃","梢","綴理","慈","吟子","姫芽"], main:["小鈴"], units:["スリーズブーケ","DOLLCHESTRA","みらくらぱーく！"],
+     syn:"海外へ引っ越す幼馴染の雪佳に「諦めない気持ち」を伝えるため、夏合宿で映画を撮影することにした9人。分担して撮影を進めるが、雨に濡れたさやかが熱を出し、映画作りは失敗してしまう。小鈴は「終わらないエンディング」を作り、続きは本当のラブライブ！で披露すると決める。",
+     quote:["小鈴","あたしは、何度だって諦めない！必ず、いつかあなたに勝つ！"],
+     vid:"iPH62EPKmrs", digest:"104期新入生 編"},
+    {period:"104", no:"第6話", title:"対よろ！！！", date:"2024-09-15", arc:"みらくらぱーく！編",
+     chars:["姫芽","慈","瑠璃乃"], main:["姫芽"], units:["みらくらぱーく！"],
+     syn:"ゲームもスクールアイドルも大好きすぎて、頭から離れずスランプに陥った姫芽。慈の発案で「好き」を増やす作戦を試すが上手くいかず、姫芽は一度ゲームを辞めることまで決意する。たどり着いた答えは、ライブで観客と「対戦」すること。好きなものを我慢しない姫芽が戻ってくる。",
+     quote:["姫芽","みらくらぱーく！は、凹んでたアタシにもすっごく元気をくれた。なのにそんなみらくらぱーく！のアタシが、好きなものを我慢なんてしていいはずがない！"],
+     vid:"dlUiwOKO0Uw", digest:"104期新入生 編"},
+    {period:"104", no:"第7話", title:"Link to the FRIENDS！", date:"2024-10-19", arc:"全体",
+     chars:["吟子","小鈴","姫芽","泉","花帆","瑠璃乃"], main:["吟子","小鈴","姫芽"], units:["スリーズブーケ","DOLLCHESTRA","みらくらぱーく！"],
+     syn:"竜胆祭とラブライブ！地方予選に向けて、104期生3人は先輩たちに次々とバトルを挑み、自分たちのストロングポイントを探す。公園で出会った桂城泉のアドバイスを受け、弱点を話し合った3人は「蓮ノ小三角」を名乗る。幕間「Brightness」では102期生の回想も。EDではセラスの素性が明かされる。",
+     quote:["吟子・小鈴・姫芽","蓮ノ小三角！"],
+     song:"Link to the FUTURE（昨年の決勝で歌った曲）", vid:"KpGqkxMRBSY"},
+    {period:"104", no:"第8話", title:"Not a marionette", date:"2024-11-04", arc:"DOLLCHESTRA編",
+     chars:["綴理","さやか","小鈴"], main:["綴理"], units:["DOLLCHESTRA"],
+     syn:"ラブライブ！地区予選を突破する一方、進路調査票を提出できない綴理は、やりたいことを探して職業体験を始める。部室の大掃除で「卒業したくない」と本音を漏らした綴理は、ビッグボイス選手権で気持ちを吐き出し、自分で決めた「やりたいこと」を進路調査票に記入する。",
+     quote:["綴理","それがボクの...最初に、自分で決めて、やりたいことだ"],
+     vid:"MhFH1XPq7MA"},
+    {period:"104", no:"第9話", title:"みらくる・ざ・ゆにばーす！", date:"2024-12-17", arc:"みらくらぱーく！編",
+     chars:["慈","瑠璃乃","梢"], main:["慈"], units:["みらくらぱーく！"],
+     syn:"母親との約束を思い出した慈は、誕生日の帰省までに「立派な常識人」になるため、生活力・言葉遣い・一般常識の特訓を開始する。模擬テストで80点を取った慈は、ラブライブ！北陸大会を自作曲で突破。進路はタレント復帰ではなく、外国でパフォーマンス修行をすることだと宣言する。",
+     quote:["慈","中途半端は、辞める！私はどうせ自己中だよ！だったら、世界一カワイイ自己中になってやる！"],
+     song:"KEY of Like!（慈が作った曲）", vid:"PE8rOyopjgw"},
+    {period:"104", no:"第10話", title:"Believe your love, Believe your live", date:"2025-01-07", arc:"ラブライブ！編",
+     chars:["花帆","泉","セラス","梢","吟子","瑠璃乃"], main:["花帆","泉"], units:["スリーズブーケ","DOLLCHESTRA","みらくらぱーく！","Edel Note"],
+     syn:"決勝を前に、セラスに誘われて瑞河女子のライブを訪れた花帆たち。かつてラブライブ！で優勝した当時の部長が残したスカーフを託され、花帆は一番最初に抱いた夢「みんなを花咲かせたい」を思い出す。決勝は蓮ノ空と瑞河の同率1位となり、プレーオフへ。瑞河には廃校の決定が下る。",
+     quote:["梢","『みんなを花咲かせたい』という素敵な夢を。あなたが一番最初に抱いたそして私が一番好きなその思いを"],
+     song:"Edelied（瑞河）／AURORA FLOWER（蓮ノ空）", vid:"GKIvD3GrZ9I"},
+    {period:"104", no:"第11話", title:"夢を咲かせる物語", date:"2025-01-19", arc:"ラブライブ！編",
+     chars:["セラス","泉","花帆","さやか","瑠璃乃","梢","綴理","慈","吟子","小鈴","姫芽"], main:["セラス","花帆"], units:["スリーズブーケ","DOLLCHESTRA","みらくらぱーく！","Edel Note"],
+     syn:"廃校と部活停止でプレーオフに出られない瑞河の2人。蓮ノ空は瑞河で文化祭「瑞蓮祭」を開き、中学生のセラスがステージに立つ方法を探す。署名活動の末に出場が認められ、プレーオフで蓮ノ空はラブライブ！優勝を果たす。タイトルは103期第15話「夢を信じる物語」へのアンサー。",
+     quote:["花帆","あたしね、本当にやりたかったことがなにかって、わかった気がするんだ。みんなを、花咲かせること！"],
+     vid:"3eZts7PMRwQ"},
+    {period:"104", no:"第12話", title:"明日の君に花束を", date:"2025-02-11", arc:"全体",
+     chars:["花帆","さやか","瑠璃乃","梢","綴理","慈","吟子","小鈴","姫芽"], main:[], units:["スリーズブーケ","DOLLCHESTRA","みらくらぱーく！"],
+     syn:"ラブライブ！優勝を果たした蓮ノ空の、その後を描く2月の回。季節は進み、102期生の卒業が近づく中で過ごす日々が描かれる。",
+     approx:"この回は詳細を確認できなかったため、期の流れからの概要のみ掲載しています。",
+     vid:"F2XvyNxRBl4"},
+    {period:"104", no:"第13話", title:"いずれ会う約束の桜", date:"2025-03-15", arc:"卒業",
+     chars:["梢","綴理","慈","花帆","さやか","瑠璃乃","吟子","小鈴","姫芽"], main:["梢","綴理","慈"], units:["スリーズブーケ","DOLLCHESTRA","みらくらぱーく！"],
+     syn:"102期生の卒業を描く、104期のフィナーレ。タイトルは103期第18話「いずれ会う四度目の桜」と対になる。ED・FINE、そして「WILL」までが実装された、別れと約束の回。",
+     approx:"この回は詳細を確認できなかったため、期の流れからの概要のみ掲載しています。",
+     vid:"4y2KIh6b4nI"},
+
+    /* ---------- 105期 ---------- */
+    {period:"105", no:"第1話", title:"Brand New Stories!!", date:"2025-04-18", arc:"全体",
+     chars:["セラス","泉","花帆","さやか","瑠璃乃","吟子","小鈴","姫芽"], main:["セラス","泉"], units:["Edel Note","スリーズブーケ","DOLLCHESTRA","みらくらぱーく！"],
+     syn:"花帆が部長となり、「みんなが花咲ける場所」を作ると宣言した105期。ラブライブ！を目指さない方針に新入生勧誘は難航するが、部室に現れたのは蓮ノ空の制服を着たセラスと泉だった。3ユニットの体験ツアーを経て、2人は1年限りのユニット「Edel Note」を蓮ノ空で再結成する。PART0「A NEW STORY!!!!!!+」も収録。",
+     quote:["セラス","わたしの新しい夢。それは、あなたに、スクールアイドルを好きにさせること"],
+     vid:"rFZLq2oXOes"},
+    {period:"105", no:"第2話", title:"Dream Match!", date:"2025-05-17", arc:"みらくらぱーく！編",
+     chars:["姫芽","花帆","瑠璃乃","吟子","泉","セラス","さやか","小鈴"], main:["姫芽"], units:["みらくらぱーく！"],
+     syn:"自分のやりたいことが花帆の夢に乗っかっているだけではないかと悩む姫芽は、ゲームの新作発表イベントにクラブ全員の協力で挑み、全力をぶつける。イベントが成功しても穴が開いたような感覚が残った姫芽は、修学旅行中の花帆のいる東京・神田明神へ向かい、本気の夢をぶつけ合う。",
+     quote:["姫芽","どっちの夢もでっかくしましょう～！"],
+     vid:"M2HOA9lVNSw"},
+    {period:"105", no:"第3話", title:"星に憧れて、花は舞う", date:"2025-06-14", arc:"三連華",
+     chars:["さやか","花帆","瑠璃乃"], main:["さやか","花帆","瑠璃乃"], units:["スリーズブーケ","DOLLCHESTRA","みらくらぱーく！"],
+     syn:"「いつでも花咲ける場所」を目指して無理を重ねた花帆が倒れてしまう。さやかは「花帆になる」ことで皆を支えようとし、瑠璃乃も含めた103期生3人は本音で話し合う。再出発のイベント名は「Bloom Garden Party」、3人の名前は「蓮ノ三連華」に決まる。追加パート「S.R.K.」も収録。",
+     quote:["さやか","あなたを笑顔にすること。それがわたしの夢です"],
+     vid:"Q9qF-9YGu6I"},
+    {period:"105", no:"第4話", title:"太陽を目指した背中", date:"2025-07-20", arc:"小三角",
+     chars:["小鈴","吟子","姫芽","さやか"], main:["小鈴"], units:["DOLLCHESTRA"],
+     syn:"小鈴は近江町市場で出会った大道広美と打ち解け、あがり症を克服するための「師匠」になる。実は広美は学校を辞めていたことが分かるが、小鈴は諦めず、「スクールアイドルになりたい人のためのステージ」を第二音楽堂で開催。広美に「スクールアイドル合格」のバッジを渡す。",
+     quote:["小鈴","徒町は...広美さんの、広美さんだけじゃないみんなの...居場所になりたいんだ"],
+     vid:"d58LuRvXOGQ"},
+    {period:"105", no:"第5話", title:"眠れる海のお姫様！", date:"2025-08-11", arc:"Edel Note編",
+     chars:["セラス","泉","吟子","花帆"], main:["セラス","泉"], units:["Edel Note"],
+     syn:"夏合宿で、セラスは泉の「余裕をなくす」作戦を次々と仕掛ける。肝試しで見えた泉のお化け嫌いと本音、そして追加パート「ABYSS/LIGHT」で明かされる演劇の先輩との過去。泉は「惨めで、つまらない。そんな私の歌」を書くことを決め、「スクールアイドル桂城泉」を始める。",
+     quote:["泉","\"スクールアイドル桂城泉\"を、始めよう"],
+     vid:"4K9RNr3MFcY"},
+    {period:"105", no:"第6話", title:"未来への花", date:"2025-09-11", arc:"スリーズブーケ編",
+     chars:["吟子","花帆","セラス","姫芽"], main:["吟子"], units:["スリーズブーケ"],
+     syn:"吟子が企画したのは、Bloom Garden Partyの前哨イベント「Bloom Days」。金沢の各所を巡るファンタジー仕立てのスタンプラリー「ハスノソラファンタジー」が街を巻き込んで開催される。吟子は閉会式で「Bloom Garden Partyを何十年も続くお祭りにする」と宣言する。",
+     quote:["吟子","何年も何十年も続いていく金沢の新たなお祭り『Bloom Garden Party』を作りたいんです！！"],
+     vid:"m2PNUE9wa_4"},
+    {period:"105", no:"第7話", title:"わがまま色の存在証明", date:"2025-10-18", arc:"全体",
+     chars:["さやか","小鈴","花帆","瑠璃乃","綴理","沙知"], main:["さやか","小鈴"], units:["DOLLCHESTRA"],
+     syn:"卒業後の進路が現実味を帯びてくる季節。花帆や瑠璃乃の漠然とした進路に気を揉むさやかは、やりたいことが定まらず悩む後輩・小鈴のお世話にのめり込みすぎてしまう。瑠璃乃の指摘で「お世話禁止」を自らに課したさやかと、自分の足で立とうとする小鈴は、竜胆祭を前にダンスバトルで正面からぶつかり合い、対等なパートナーとしてDOLLCHESTRAを一から組み直す。幕間「これまで→ここから」も収録。",
+     song:"はじまりの羽音（さやかが作った初の自作曲）／Dream Believers（105期Ver.）／BLAST!! ほか・10月度Fes×LIVE（竜胆祭）",
+     memo:"第8話と合わせたまとめ動画で公開。", vid:"KcTComohRfA"},
+    {period:"105", no:"第8話", title:"今はまだ遥か幽かな光", date:"2025-11-07", arc:"全体",
+     chars:["花帆","さやか","瑠璃乃","吟子","小鈴","姫芽","セラス","泉"], main:["セラス","泉"], units:["スリーズブーケ","DOLLCHESTRA","みらくらぱーく！","Edel Note"],
+     syn:"廃校になったはずの瑞河女子が、経営母体の変更で復活することになった。その後押しとして第二回瑞蓮祭の開催が持ち上がり、Edel Noteと104期生が中心となって準備を進める。瑞河への複雑な思いを抱える泉は、自分の過去と向き合いながらリベンジに挑むが、過労で倒れたセラスを前に、かつて先輩のそばを去った時と同じ選択をしそうになる。姫芽の言葉に背中を押され、泉は逃げずに残ることを選ぶ。追加パート「VENUS」では、セラスが瑞河へ戻らないと決めた理由と、後輩・海莉への託し方が明かされる。",
+     memo:"第7話と合わせたまとめ動画で公開。追加パート「VENUS」（2025-11-17）収録。", vid:"KcTComohRfA"},
+    {period:"105", no:"第9話", title:"ALL Link to YOU", date:"2025-12-13", arc:"全体",
+     chars:["花帆","さやか","瑠璃乃","吟子","小鈴","姫芽","セラス","泉","梢","綴理","慈"], main:["花帆"], units:["スリーズブーケ","DOLLCHESTRA","みらくらぱーく！","Edel Note"],
+     syn:"Bloom Garden Party＝Staring Bloomの準備が本格化し、102期生の正式参加も決まる。ユニットの垣根を越えた役割分担で大規模な企画が進む中、お手伝いスクールアイドルのつぐみが花帆に「夢を奪われた」と真正面から反感をぶつけてくる。花帆は反対意見の声をすべて読み直し、つぐみとその先輩を繋ぎ直すことで応える。そして出した答えは、開催期間を延長してでも「みんなが花咲ける場所」にすることだった。追加パート「FRIEND」も収録。",
+     song:"乙女詞華集（スリーズブーケ）／シアター生き様（Edel Note）・12月度Fes×LIVE",
+     vid:"V5C-SQOaaA4"},
+    {period:"105", no:"第10話", title:"ゆえに、ルリあり。", date:"2026-01-08", arc:"みらくらぱーく！編",
+     chars:["瑠璃乃","姫芽","慈"], main:["瑠璃乃","慈"], units:["みらくらぱーく！"],
+     syn:"スーパーアーティストの祭典に向け、みらくらぱーく！の新曲作りを任された瑠璃乃。ところが「強くなりすぎた」自分の曲に納得できず、スランプに陥ってしまう。幼い頃の慈との原点や公園での思い出を辿り直した瑠璃乃は、自分の弱さも含めて受け入れることで、3年間の集大成となる曲を完成させる。103期第17話「ルリ思う。」と対になるタイトルで、2つを繋げると瑠璃乃の決め台詞になる。",
+     song:"Echoes Beyond（瑠璃乃が作った全員曲）／Dream Believers（103-105th Ver.）・Fes×ReC：LIVE",
+     vid:"QuOd_qoyypQ"},
+    {period:"105", no:"第11話", title:"みんなで、花咲きたい！", date:"2026-02-12", arc:"全体",
+     chars:["花帆","さやか","瑠璃乃","吟子","小鈴","姫芽","セラス","泉"], main:["花帆"], units:["スリーズブーケ","DOLLCHESTRA","みらくらぱーく！","Edel Note"],
+     syn:"全国各地でBloom Garden Partyを連続開催する「ブルパ連合」計画が動き出すが、「花帆がいない場所では花咲かせられない」という不安の声が上がる。花帆はテレビ出演・配信・ライブの「トリプル・フラワー大作戦」で各地を回り、3年間を振り返って見つけた答え「夢中になる」を新曲に込める。一方、眩しすぎる夢に心が折れてしまった人たちの存在に弱る花帆を救ったのは、かつて花帆のソロライブに救われたという後輩・びわこの言葉だった。追加パート「FLOWER」「TREE」も収録。タイトルは103期第1話「花咲きたい！」へのアンサー。",
+     song:"今、過去、未来の三原色（花帆の新曲）",
+     vid:"qNC2Daihqtk"},
+    {period:"105", no:"第12話", title:"ずっと花咲く僕らの桜", date:"2026-03-07", arc:"卒業",
+     chars:["花帆","さやか","瑠璃乃","吟子","小鈴","姫芽","セラス","泉"], main:["花帆","さやか","瑠璃乃"], units:["スリーズブーケ","DOLLCHESTRA","みらくらぱーく！","Edel Note"],
+     syn:"Bloom Garden Party本番を控えた3月。102期生も交えた食事会や、完成したアルバムツリーを囲む日々の中で、次期部長の話題も出るが、後輩たちは結論を急がず「三年生との今を悔いなく楽しむ」ことを選ぶ。本番後のCODAでは各ユニットの最後の日々が描かれ、PERIODで吟子が106期の部長としてバトンを受け取る。103期生の卒業とともに、第1章が幕を閉じるグランドエンディング。",
+     song:"EdelinieN／トモダチになれる場所／アイシイ／不思議と君とライブラリー／今、過去、未来の三原色・Bloom Garden Party Fes×LIVE",
+     memo:"2026年3月30日にCODA、3月31日にPERIOD（第1章グランドエンディング）と「||:106」が追加された。",
+     vid:"k34hUP7354A"},
+
+    /* ---------- 間章 Dream Interlude ---------- */
+    {period:"kansho", no:"Chapter", title:"-PERENNIAL-『Water the folowers』", date:"2026-04-30", arc:"間章",
+     chars:["花帆","さやか","瑠璃乃","吟子","小鈴","姫芽","セラス","泉"], main:[], units:[],
+     syn:"第1章完結後に始まった間章「Dream Interlude」の最初のChapter。花帆の在学中に起きた、第1章では語られなかったエピソードを描く新シリーズの開幕。アプリ「リンクラ」で公開された。",
+     approx:"この回は詳細を確認できなかったため、概要のみ掲載しています。",
+     vid:"4yeXqBisXxg"},
+    {period:"kansho", no:"Chapter", title:"FILM B.G.P.『恥は人生のかきすて（蓮ノ小四辺形Ver.）』", date:"2026-05-16", arc:"間章",
+     chars:["吟子","小鈴","姫芽","セラス"], main:["吟子","小鈴","姫芽"], units:[],
+     syn:"間章のChapter「FILM B.G.P.」。2026年5月30日・31日の6thライブで、活動記録がサプライズ公開されたことでも話題になった回。「恥は人生のかきすて」は、小鈴の座右の銘（？）に由来するタイトル。",
+     approx:"この回は詳細を確認できなかったため、概要のみ掲載しています。",
+     vid:"byq4j290Aw4"},
+    {period:"kansho", no:"Chapter", title:"-BRIGHT SEEDS-『Be Cera-fish』", date:"2026-06-01", arc:"間章",
+     chars:["セラス","泉"], main:["セラス"], units:["Edel Note"],
+     syn:"間章のChapter「-BRIGHT SEEDS-」。タイトルにセラスの名を冠した、Edel Noteの2人を中心とするエピソード。",
+     approx:"この回は詳細を確認できなかったため、概要のみ掲載しています。",
+     vid:"U8nt2xDB53A"},
+    {period:"kansho", no:"YouTube", title:"能登はやさしや土までも", date:"2026-08-10", arc:"間章",
+     chars:["瑠璃乃"], main:["瑠璃乃"], units:["みらくらぱーく！"],
+     syn:"105期の夏休みが舞台。能登のスクールアイドルから届いたメッセージを受け取った瑠璃乃が、地元・能登をPRする曲作りに挑む物語。能登の人や風景に触れながら、瑠璃乃がPR曲「おいでよ！能登大観光」を作り上げていく。公式YouTubeで公開された間章エピソード。",
+     song:"おいでよ！能登大観光（瑠璃乃が作った能登PR曲）",
+     vid:"v1yhhIScMII"},
+    {period:"kansho", no:"YouTube", title:"陽ノ下に咲く蓮", date:"2026-10-04", arc:"間章",
+     chars:["花帆"], main:["花帆"], units:["スリーズブーケ"],
+     syn:"105期3月初旬、Bloom Garden Party直前の出来事。花帆が母親に頼まれ、ケンカをしてしまった妹たちを仲裁するため、後輩たちを金沢の実家に呼ぶ物語。スクールアイドルとしての顔とは違う、花帆の「お姉ちゃん」としての一面が描かれる。公式YouTubeで公開された間章エピソード。",
+     vid:"4Ca3p8ETHyU"},
+    {period:"kansho", no:"蓮ノート", title:"大賀美沙知の活動記録（小説シリーズ）", date:"蓮ノート", arc:"蓮ノート",
+     chars:["沙知"], main:["沙知"], units:[],
+     syn:"公式note「蓮ノート」で展開する小説形式のシリーズ。大賀美沙知が1年生だった頃の活動記録を描く。",
+     chapters:{h:"公開エピソード（蓮ノート）", items:["『氷花の交わり』（2026-09-25）","『Starsness』（2026-10-02）","『華を纏いて、華を覓む』（2026-10-09）","『どしゃぶり、腹ペコ、エトセトラ』（2026-10-30）","『しあわせの旅』（2026-11-06）"]},
+     approx:"各話のあらすじは未確認のため、タイトルと公開日のみ掲載しています。"}
+    ];
+
+    /* ============ 状態と描画 ============ */
+    var state = { period:"all", unit:"", char:"", q:"", digest:false };
+    var $ = function(s){ return document.querySelector(s); };
+    function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+    function periodOf(id){ for (var i=0;i<PERIODS.length;i++) if (PERIODS[i].id===id) return PERIODS[i]; return PERIODS[1]; }
+    function fmtDate(d){
+      var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d);
+      return m ? (m[1]+"年"+(+m[2])+"月"+(+m[3])+"日") : d;
+    }
+
+    /* --- 期タブ --- */
+    var tabsEl = $("#period-tabs");
+    var tabDefs = [{id:"all", name:"すべて", sub:"", hex:"#8a7d6b"}].concat(PERIODS);
+    tabDefs.forEach(function(p){
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "tab"; b.dataset.period = p.id;
+      b.style.setProperty("--tc", p.hex);
+      b.setAttribute("aria-pressed", p.id==="all" ? "true" : "false");
+      b.innerHTML = '<span class="dot"></span>' + esc(p.name) + (p.sub ? " <small>"+esc(p.sub)+"</small>" : "");
+      b.addEventListener("click", function(){
+        state.period = p.id;
+        tabsEl.querySelectorAll(".tab").forEach(function(t){ t.setAttribute("aria-pressed", t.dataset.period===p.id ? "true":"false"); });
+        document.documentElement.style.setProperty("--period", "var(--p"+(p.id==="kansho"?"kansho":p.id)+")");
+        render();
+      });
+      tabsEl.appendChild(b);
+    });
+
+    /* --- ユニットチップ --- */
+    var unitEl = $("#unit-chips");
+    function addUnitChip(val, label){
+      var b = document.createElement("button");
+      b.type="button"; b.className="chip"; b.dataset.unit = val;
+      b.setAttribute("aria-pressed", val==="" ? "true":"false");
+      b.textContent = label;
+      b.addEventListener("click", function(){
+        state.unit = val;
+        unitEl.querySelectorAll(".chip").forEach(function(c){ c.setAttribute("aria-pressed", c.dataset.unit===val ? "true":"false"); });
+        render();
+      });
+      unitEl.appendChild(b);
+    }
+    addUnitChip("", "すべてのユニット");
+    UNITS.forEach(function(u){ addUnitChip(u, u); });
+
+    /* --- キャラチップ（選択でアクセント色が変わる） --- */
+    var charEl = $("#char-chips");
+    function addCharChip(val, label, color){
+      var b = document.createElement("button");
+      b.type="button"; b.className="chip"; if (val) b.dataset.char = val;
+      b.setAttribute("aria-pressed", val==="" ? "true":"false");
+      if (color) b.style.setProperty("--cc", color);
+      b.innerHTML = (color ? '<span class="cdot"></span>' : "") + esc(label);
+      b.addEventListener("click", function(){
+        state.char = val;
+        charEl.querySelectorAll(".chip").forEach(function(c){ c.setAttribute("aria-pressed", "false"); });
+        b.setAttribute("aria-pressed","true");
+        document.documentElement.style.setProperty("--accent", color || "#c2496b");
+        render();
+      });
+      charEl.appendChild(b);
+    }
+    addCharChip("", "全員", "");
+    Object.keys(CHARS).forEach(function(k){ addCharChip(k, CHARS[k].full, CHARS[k].color); });
+
+    /* --- 検索・モード --- */
+    $("#q").addEventListener("input", function(e){ state.q = e.target.value.trim(); render(); });
+    $("#digest-toggle").addEventListener("click", function(){
+      state.digest = !state.digest;
+      this.setAttribute("aria-pressed", state.digest ? "true":"false");
+      $("#digest-panel").classList.toggle("hidden", !state.digest);
+      render();
+    });
+    $("#reset-btn").addEventListener("click", function(){
+      state = { period:"all", unit:"", char:"", q:"", digest:false };
+      $("#q").value = "";
+      $("#digest-toggle").setAttribute("aria-pressed","false");
+      $("#digest-panel").classList.add("hidden");
+      tabsEl.querySelectorAll(".tab").forEach(function(t){ t.setAttribute("aria-pressed", t.dataset.period==="all" ? "true":"false"); });
+      unitEl.querySelectorAll(".chip").forEach(function(c){ c.setAttribute("aria-pressed", c.dataset.unit==="" ? "true":"false"); });
+      charEl.querySelectorAll(".chip").forEach(function(c){ c.setAttribute("aria-pressed", c.dataset.char ? "false":"true"); });
+      document.documentElement.style.setProperty("--accent", "#c2496b");
+      render();
+    });
+
+    /* --- ダイジェスト動画パネル --- */
+    var dvEl = $("#digest-videos");
+    DIGESTS.forEach(function(d){
+      var div = document.createElement("div"); div.className = "dv";
+      div.innerHTML = '<a href="'+yt(d.vid)+'" target="_blank" rel="noopener">' +
+        '<img src="'+thumb(d.vid)+'" alt="'+esc(d.title)+' のサムネイル" loading="lazy" />' +
+        '<div class="t">'+esc(d.title)+'</div><div class="d">'+esc(d.covers)+'</div></a>';
+      dvEl.appendChild(div);
+    });
+
+    /* --- フィルタ --- */
+    function matches(ep){
+      if (state.period !== "all" && ep.period !== state.period) return false;
+      if (state.digest && !ep.digest) return false;
+      if (state.unit){
+        var inUnit = (ep.units||[]).indexOf(state.unit) >= 0;
+        var charUnit = (ep.chars||[]).some(function(c){ return CHARS[c] && CHARS[c].unit === state.unit; });
+        if (!inUnit && !charUnit) return false;
+      }
+      if (state.char && (ep.chars||[]).indexOf(state.char) < 0) return false;
+      if (state.q){
+        var hay = [ep.title, ep.no, ep.arc, ep.syn, ep.memo||"", ep.song||"",
+          (ep.chars||[]).map(function(c){ return c + " " + (CHARS[c]?CHARS[c].full:""); }).join(" "),
+          ep.chapters ? ep.chapters.items.join(" ") : ""].join(" ");
+        var qs = state.q.split(/[\s　]+/);
+        for (var i=0;i<qs.length;i++){ if (qs[i] && hay.indexOf(qs[i]) < 0) return false; }
+      }
+      return true;
+    }
+
+    /* --- カード描画 --- */
+    function charTags(ep){
+      return (ep.chars||[]).map(function(c){
+        var info = CHARS[c]; if (!info) return "";
+        var main = (ep.main||[]).indexOf(c) >= 0;
+        return '<span class="char-tag'+(main?" main":"")+'" style="--cc:'+info.color+'" title="'+esc(info.full)+(info.unit?"／"+info.unit:"")+'"><i></i>'+esc(c)+'</span>';
+      }).join("");
+    }
+    function cardHTML(ep){
+      var p = periodOf(ep.period);
+      var h = '<article class="card" style="--pc:'+p.hex+'">';
+      h += '<div class="card-top"><div class="card-main">';
+      h += '<div class="tags"><span class="tag-sq">'+esc(p.name)+'</span>' +
+           '<span class="tag-sq sub">'+esc(ep.arc)+'</span>' +
+           (ep.digest ? '<span class="tag-sq digest">⏱ ダイジェスト対象</span>' : "") +
+           '<span class="ep-date">'+esc(fmtDate(ep.date))+'</span></div>';
+      h += '<h3><span class="epno">'+esc(ep.no)+'</span>'+esc(ep.title)+'</h3>';
+      h += '<p class="syn">'+esc(ep.syn)+(ep.approx ? ' <span class="approx">※'+esc(ep.approx)+'</span>' : "")+'</p>';
+      h += '</div>';
+      if (ep.vid){
+        h += '<figure class="thumb" style="margin:0"><a href="'+yt(ep.vid)+'" target="_blank" rel="noopener" aria-label="公式YouTubeで活動記録を見る">' +
+             '<img src="'+thumb(ep.vid)+'" alt="活動記録「'+esc(ep.title)+'」公式動画サムネイル" loading="lazy" />' +
+             '<span class="play"><span>▶</span></span></a><figcaption>公式YouTubeまとめ動画</figcaption></figure>';
+      }
+      h += '</div>';
+      if (ep.chapters){
+        h += '<div class="book-cols"><div><h4>'+esc(ep.chapters.h)+'</h4><ol>' +
+             ep.chapters.items.map(function(it){ return "<li>"+esc(it)+"</li>"; }).join("") + '</ol></div></div>';
+      }
+      h += '<div class="meta">';
+      if (ep.chars && ep.chars.length){
+        h += '<div class="meta-row"><span class="k">登場人物</span><span class="v"><span class="chars">'+charTags(ep)+'</span></span></div>';
+      }
+      if (ep.quote){
+        h += '<div class="meta-row"><span class="k">名言メモ</span><span class="v quote"><span class="who">'+esc(ep.quote[0])+'</span>「'+esc(ep.quote[1])+'」</span></div>';
+      }
+      if (ep.memo){
+        h += '<div class="meta-row"><span class="k">メモ</span><span class="v">'+esc(ep.memo)+'</span></div>';
+      }
+      if (ep.song){
+        h += '<div class="meta-row"><span class="k">関連曲</span><span class="v">'+esc(ep.song)+'</span></div>';
+      }
+      h += '</div>';
+      if (ep.vid){
+        var dv = ep.digest ? DIGEST_VID[ep.digest] : null;
+        h += '<div class="card-links"><a class="btn-link" href="'+yt(ep.vid)+'" target="_blank" rel="noopener">▶ 公式YouTubeで見る</a>' +
+             (dv ? '<a class="btn-link sub" href="'+yt(dv)+'" target="_blank" rel="noopener">⏱ ダイジェストで追いつく</a>' : "") +
+             '</div>';
+      }
+      h += '</article>';
+      return h;
+    }
+
+    function render(){
+      var list = $("#list");
+      var html = "", total = 0;
+      PERIODS.forEach(function(p){
+        var eps = EPISODES.filter(function(ep){ return ep.period === p.id && matches(ep); });
+        if (!eps.length) return;
+        total += eps.length;
+        html += '<section aria-label="'+esc(p.name)+'"><div class="period-head" style="--pc:'+p.hex+'">' +
+                '<h2>'+esc(p.name)+(p.sub ? ' <small style="font-size:.55em;color:var(--ink3);font-family:\'Noto Sans JP\',sans-serif;font-weight:500">'+esc(p.sub)+'</small>' : "")+'</h2>' +
+                '<p>'+esc(p.desc)+'</p></div><div class="grid">' +
+                eps.map(cardHTML).join("") + '</div></section>';
+      });
+      list.innerHTML = html;
+      $("#empty").classList.toggle("hidden", total > 0);
+      $("#result-count").textContent = total + " 件の記録が見つかりました" +
+        (state.digest ? "（ざっくり追いつくモード：ダイジェスト対象回のみ）" : "");
+    }
+
+    render();
+    </script>
+  <script data-goatcounter="https://hasunosora-guide.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
